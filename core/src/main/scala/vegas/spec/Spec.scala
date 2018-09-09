@@ -972,27 +972,30 @@ object Spec {
  text: Option[FieldDef] = None,
  label: Option[FieldDef] = None,
  path: Option[UnitEncoding.PathUnion] = None,
- order: Option[UnitEncoding.OrderUnion] = None);
+ order: Option[UnitEncoding.OrderUnion] = None)
   object UnitEncoding {
-    @union sealed trait DetailUnion extends scala.Product with scala.Serializable;
-    case class DetailFieldDef(x: FieldDef) extends DetailUnion;
-    case class DetailListFieldDef(x: List[FieldDef]) extends DetailUnion;
-    @union sealed trait PathUnion extends scala.Product with scala.Serializable;
-    case class PathOrderChannelDef(x: OrderChannelDef) extends PathUnion;
-    case class PathListOrderChannelDef(x: List[OrderChannelDef]) extends PathUnion;
-    @union sealed trait OrderUnion extends scala.Product with scala.Serializable;
-    case class OrderOrderChannelDef(x: OrderChannelDef) extends OrderUnion;
+    @union sealed trait DetailUnion extends scala.Product with scala.Serializable
+    case class DetailFieldDef(x: FieldDef) extends DetailUnion
+    case class DetailListFieldDef(x: List[FieldDef]) extends DetailUnion
+    @union sealed trait PathUnion extends scala.Product with scala.Serializable
+    case class PathOrderChannelDef(x: OrderChannelDef) extends PathUnion
+    case class PathListOrderChannelDef(x: List[OrderChannelDef]) extends PathUnion
+    @union sealed trait OrderUnion extends scala.Product with scala.Serializable
+    case class OrderOrderChannelDef(x: OrderChannelDef) extends OrderUnion
     case class OrderListOrderChannelDef(x: List[OrderChannelDef]) extends OrderUnion
-  };
-  @union sealed trait VegaUnion extends scala.Product with scala.Serializable;
-  case class VegaExtendedUnitSpec(x: ExtendedUnitSpec) extends VegaUnion;
-  case class VegaFacetSpec(x: FacetSpec) extends VegaUnion;
-  case class VegaLayerSpec(x: LayerSpec) extends VegaUnion;
+  }
+  @union sealed trait VegaUnion extends scala.Product with scala.Serializable
+  case class VegaExtendedUnitSpec(x: ExtendedUnitSpec) extends VegaUnion
+  case class VegaFacetSpec(x: FacetSpec) extends VegaUnion
+  case class VegaLayerSpec(x: LayerSpec) extends VegaUnion
   trait LowPriorityImplicits {
-    import cats.syntax.either._;
-    import io.circe._;
-    import io.circe.syntax._;
-    def anyEncoder: Encoder[Any] = Encoder.instance(((a: Any) => a match {
+
+    // JSON parsing imports
+    import cats.syntax.either._
+    import io.circe._
+    import io.circe.syntax._
+
+    def anyEncoder: Encoder[Any] = Encoder.instance((a: Any) => a match {
       case null => Json.Null
       case (b @ ((_): Boolean)) => b.asJson
       case (b @ ((_): Byte)) => b.asJson
@@ -1009,27 +1012,24 @@ object Spec {
       case (a @ ((_): Array[Long] @unchecked)) => a.asJson
       case (a @ ((_): Array[Float] @unchecked)) => a.asJson
       case (a @ ((_): Array[Double] @unchecked)) => a.asJson
-      case (s @ ((_): Array[Any] @unchecked)) => s.asJson(Encoder.encodeTraversableOnce(anyEncoder,
- implicitly))
-      case (s @ ((_): Seq[Any] @unchecked)) => s.asJson(Encoder.encodeTraversableOnce(anyEncoder,
- implicitly))
-      case (ma @ ((_): Map[String,
- Any] @unchecked)) => ma.asJson(Encoder.encodeMapLike(KeyEncoder.encodeKeyString,
- anyEncoder))
-    }));
-    def anyDecoder: Decoder[Any] = Decoder.instance(((h: HCursor) => h.focus.get match {
+      case (s @ ((_): Array[Any] @unchecked)) => s.asJson(Encoder.encodeTraversableOnce(anyEncoder, implicitly))
+      case (s @ ((_): Seq[Any] @unchecked)) => s.asJson(Encoder.encodeTraversableOnce(anyEncoder, implicitly))
+      case (ma @ ((_): Map[String, Any] @unchecked)) => ma.asJson(Encoder.encodeMapLike(KeyEncoder.encodeKeyString, anyEncoder))
+    })
+
+
+    def anyDecoder: Decoder[Any] = Decoder.instance((h: HCursor) => h.focus.get match {
       case (n @ _) if n.isNull => null
       case (n @ _) if n.isNumber => n.as[Double]
       case (b @ _) if b.isBoolean => b.as[Boolean]
       case (s @ _) if s.isString => s.as[String]
-      case (o @ _) if o.isObject => o.as[Map[String,
- Any]](Decoder.decodeMapLike(KeyDecoder.decodeKeyString,
- anyDecoder,
- Map.canBuildFrom))
-      case (a @ _) if a.isArray => a.as[List[Any]](Decoder.decodeCanBuildFrom(anyDecoder,
- List.canBuildFrom[Any]))
-    }));
-    implicit val SpecExtendedUnitSpecEncoder: Encoder[Spec.ExtendedUnitSpec] = Encoder.instance(((cc: Spec.ExtendedUnitSpec) => Json.obj("width".->(cc.width.asJson),
+      case (o @ _) if o.isObject => o.as[Map[String, Any]](Decoder.decodeMapLike(KeyDecoder.decodeKeyString, anyDecoder, Map.canBuildFrom))
+      case (a @ _) if a.isArray => a.as[List[Any]](Decoder.decodeCanBuildFrom(anyDecoder, List.canBuildFrom[Any]))
+    })
+
+
+
+    implicit val SpecExtendedUnitSpecEncoder: Encoder[Spec.ExtendedUnitSpec] = Encoder.instance((cc: Spec.ExtendedUnitSpec) => Json.obj("width".->(cc.width.asJson),
  "height".->(cc.height.asJson),
  "mark".->(cc.mark.asJson),
  "encoding".->(cc.encoding.asJson),
@@ -1037,7 +1037,7 @@ object Spec {
  "description".->(cc.description.asJson),
  "data".->(cc.data.asJson),
  "transform".->(cc.transform.asJson),
- "config".->(cc.config.asJson))));
+ "config".->(cc.config.asJson)))
     implicit val SpecExtendedUnitSpecDecoder: Decoder[Spec.ExtendedUnitSpec] = Decoder.instance(((c: HCursor) => c.downField("width").as[Option[Double]]
 .flatMap(((width) => c.downField("height").as[Option[Double]]
 .flatMap(((height) => c.downField("mark").as[Mark]
