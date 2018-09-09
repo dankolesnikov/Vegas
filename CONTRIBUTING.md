@@ -75,3 +75,54 @@ process.
 2. Go to the Vegas github [repo](https://github.com/aishfenton/Vegas) and
 add release notes under "releases" 
 
+
+# Suggested Environment Setup
+
+This is not a required setup, but rather a proven way of developing for Vegas with little headache.
+
+* Oracle JDK 8 (not OpenJDK!)
+* IntelliJ IDEA with Scala, SBT plugins
+* SBT 
+* Apache Zeppelin notebook
+
+The reason we use Oracle JDK is because Open JDK doesn't have JavaFX.
+
+### Terminal commands with expected output 
+
+```sh
+java -version 
+
+java version "1.8.0_181"
+Java(TM) SE Runtime Environment (build 1.8.0_181-b13)
+Java HotSpot(TM) 64-Bit Server VM (build 25.181-b13, mixed mode)
+```
+
+If the output is OpenJDK, change to Oracle.
+
+There should be no errors going forward.
+
+```$sh
+sbt clean compile
+```
+
+```$xslt
+sbt test
+```
+
+### Building a jar
+
+```$xslt
+sbt assembly
+```
+
+It is discouraged from using `sbt publishLocal` for jar creation because we need an uber jar of Vegas for Zeppelin.
+
+After assembly, this is the path for the uber jar to be imported in Zeppelin: 
+
+```$xslt
+/YOUR_PATH/Vegas/spark/target/scala-2.11/spark-assembly-0.3.12-SNAPSHOT.jar 
+```
+
+Now, you can import local Vegas into Zeppelin and test your functionality.
+
+
