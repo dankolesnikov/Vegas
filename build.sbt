@@ -74,7 +74,7 @@ mkNotebooks := (Def.inputTaskDyn {
 // -------
 
 // this needs to be updated to 0.9.3
-lazy val circeVersion = "0.7.0"
+lazy val circeVersion = "0.9.3"
 
 lazy val commonSettings = Seq(
   description := "The missing matplotlib for Scala and Spark",
