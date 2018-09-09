@@ -19,7 +19,7 @@ class WindowRendererSpec extends FlatSpec with Matchers {
     val wr = specBuilder.window
     wr.show
     Thread.sleep(1000)
-    wr.errors shouldBe (empty)
+    wr.errors shouldBe empty
     wr.close
   }
 

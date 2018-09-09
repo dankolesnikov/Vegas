@@ -72,6 +72,7 @@ mkNotebooks := (Def.inputTaskDyn {
 // Build Config
 // -------
 
+// this needs to be updated to 0.9.3
 lazy val circeVersion = "0.7.0"
 
 lazy val commonSettings = Seq(
