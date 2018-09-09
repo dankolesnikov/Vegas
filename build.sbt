@@ -38,6 +38,7 @@ addCommandAlias("look", "vegas/test:runMain vegas.util.Look")
 
 lazy val mkVegaModel = taskKey[Unit]("Compiles and copies the vega-lite model and codec to the Vegas project")
 
+
 mkVegaModel := {
   val src = (scalaBinaryVersion.value match {
     case "2.11" => file("spec/target/scala-2.11/Spec.scala")
